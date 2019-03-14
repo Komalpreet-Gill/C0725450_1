@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using C0725450;
+using System;
 namespace BankTests
 {
     [TestClass]
@@ -22,8 +23,7 @@ namespace BankTests
             Assert.AreEqual(expected, actual, 0.001, "Account not debited correctly");
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [TestMethod]       
         public void Debit_WhenAmountIsLessThanZero_ShouldThrowArgumentOutOfRange()
         {
             //Arrange
@@ -32,11 +32,41 @@ namespace BankTests
             BankAccount account = new BankAccount("Mr. Bryan Walton", beginningBalance);
 
             //Act
-            account.Debit(debitAmount);
+            try
+            {
+                account.Debit(debitAmount);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                //Assert is handled by the ExpectedException attribute on the test method.
+                StringAssert.Contains(e.Message, BankAccount.DebitAmountLessThanZeroMessage);
+                return;
+            }
 
-            //Assert is handled by the ExpectedException attribute on the test method.
-            
+            Assert.Fail("The expected exception was not thrown.");
         }
 
+        [TestMethod]
+        public void Debit_WhenAmountIsMoreThanZero_ShouldThrowArgumentOutOfRange()
+        {
+            //Arrange
+            double beginningBalance = 11.99;
+            double debitAmount = 20.00;
+            BankAccount account = new BankAccount("Mr. Bryan Walton", beginningBalance);
+
+            //Act
+            try
+            {
+                account.Debit(debitAmount);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                //Assert is handled by the ExpectedException attribute on the test method.
+                StringAssert.Contains(e.Message, BankAccount.DebitAmountExceedsBalanceMessage);
+                return;
+            }
+
+            Assert.Fail("The expected exception was not thrown.");
+        }
     }
 }
