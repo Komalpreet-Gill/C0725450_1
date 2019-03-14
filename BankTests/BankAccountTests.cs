@@ -57,7 +57,7 @@ namespace BankTests
             //Act
             try
             {
-                account.Debit(debitAmount);
+                account.Debit(debitAmount); 
             }
             catch (ArgumentOutOfRangeException e)
             {
